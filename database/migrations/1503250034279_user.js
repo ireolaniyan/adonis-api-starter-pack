@@ -8,8 +8,8 @@ class UserSchema extends Schema {
     this.create('users', (table) => {
       // Edit this migration to suite the details you intend to get about the users of your (web or mobile) application
       table.increments()
-      table.string('first_name', 25).notNullable()
-      table.string('last_name', 25).notNullable()
+      table.string('first_name', 80).notNullable()
+      table.string('last_name', 80).notNullable()
       table.string('username', 80).notNullable().unique()
       table.string('email', 254).notNullable().unique()
       table.string('phone').notNullable().unique()
