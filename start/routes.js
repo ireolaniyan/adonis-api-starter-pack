@@ -21,8 +21,8 @@ Route.post('/login', 'UserController.login')
 Route.group(() => {
   Route.get('/profile', 'UserController.profile')
   // TODO: Validate the editProfie route
-  Route.post('/editProfile', 'UserController.editProfile')
-
+  Route.put('/editProfile', 'UserController.editProfile')
+  Route.put('/changePassword', 'UserController.changePassword')
 })
   .prefix('account')
   .middleware(['auth:jwt'])
