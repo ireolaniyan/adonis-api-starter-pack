@@ -18,4 +18,11 @@ const Route = use('Route')
 
 Route.post('/register', 'UserController.register').validator('RegisterUser')
 Route.post('/login', 'UserController.login')
-Route.get('/profile', 'UserController.profile').middleware(['auth:jwt'])
+Route.group(() => {
+  Route.get('/profile', 'UserController.profile')
+  // TODO: Validate the editProfie route
+  Route.post('/editProfile', 'UserController.editProfile')
+
+})
+  .prefix('account')
+  .middleware(['auth:jwt'])

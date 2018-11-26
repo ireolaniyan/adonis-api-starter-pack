@@ -73,7 +73,32 @@ class UserController {
     })
   }
 
-  
+  async editProfile({ request, auth, response }) {
+    try {
+      // get the currently authenticated user
+      const user = auth.current.user
+
+      // upadate field and save
+      user.first_name = request.input('first_name')
+      user.last_name = request.input('last_name')
+      user.username = request.input('username')
+      user.email = request.input('email')
+      user.phone = request.input('phone')
+
+      await user.save()
+
+      return response.send({
+        status: 'success',
+        message: 'Profile Updated',
+        data: user
+      })
+    } catch (error) {
+      return response.status(404).send({
+        status: 'error',
+        message: 'There was a problem updating your profile. Please try again later'
+      })
+    }
+  }
 }
 
 module.exports = UserController
