@@ -60,6 +60,20 @@ class UserController {
       })
     }
   }
+
+  async profile({ auth, response }) {
+    const user = await User.find(auth.current.user.id)
+    if (user) {
+      return response.status(200).send({
+        data: user
+      })
+    }
+    return response.status(404).send({
+      message: "User not found"
+    })
+  }
+
+  
 }
 
 module.exports = UserController

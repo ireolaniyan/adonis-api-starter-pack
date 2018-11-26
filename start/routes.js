@@ -18,3 +18,4 @@ const Route = use('Route')
 
 Route.post('/register', 'UserController.register').validator('RegisterUser')
 Route.post('/login', 'UserController.login')
+Route.get('/profile', 'UserController.profile').middleware(['auth:jwt'])
