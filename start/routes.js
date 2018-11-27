@@ -26,3 +26,4 @@ Route.group(() => {
 })
   .prefix('account')
   .middleware(['auth:jwt'])
+Route.get('/logout', 'UserController.logout').middleware('auth')

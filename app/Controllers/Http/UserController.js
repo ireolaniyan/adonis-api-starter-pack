@@ -2,10 +2,10 @@
 
 const User = use('App/Models/User')
 const Hash = use('Hash')
-
+const Encryption = use('Encryption')
 
 class UserController {
-  async allUsers({ response }) {
+  async users({ response }) {
     // Get all the registered users in the database. Most likely an ADMIN route
     let users = await User.all()
     response.send(users)
@@ -127,6 +127,26 @@ class UserController {
     return response.send({
       status: 'success',
       message: 'Password changed'
+    })
+  }
+
+  async logout({ auth, response }) {
+    // get the current user
+    const user = await auth.current.user
+
+    // get the current user's token
+    const token = auth.getAuthHeader()
+
+    // revoke the token
+    await user
+      .tokens()
+      .where('type', 'api_token')
+      .where('is_revoked', false)
+      .where('token', Encryption.decrypt(token))
+      .update({ is_revoked: true })
+
+    return response.send({
+      message: 'Successfully logged out'
     })
   }
 }
