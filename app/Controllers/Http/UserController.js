@@ -80,11 +80,22 @@ class UserController {
       const password = request.input('password')
 
       let token
+      let user
       if (request.input('email')) {
-        token = await auth.authenticator('jwtEmail').withRefreshToken().attempt(email, password)
+        // token = await auth.authenticator('jwtEmail').attempt(email, password)
+        token = await auth.attempt(email, password)
+        user = await User.query()
+          .where('email', email)
+          .first()
       } else if (request.input('username')) {
-        token = await auth.authenticator('jwtUsername').withRefreshToken().attempt(username, password)
+        token = await auth.authenticator('jwtUsername').attempt(username, password)
+        user = await User.query()
+          .where('username', username)
+          .first()
       }
+
+      user.is_login = true
+      await user.save()
 
       return response.status(200).send({
         message: "Now logged in",
@@ -188,6 +199,8 @@ class UserController {
       .where('token', Encryption.decrypt(token))
       .update({ is_revoked: true })
 
+    user.is_login = false
+    await user.save()
     return response.send({
       message: 'Successfully logged out'
     })
