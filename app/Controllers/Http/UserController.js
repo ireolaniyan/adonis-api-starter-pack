@@ -45,6 +45,34 @@ class UserController {
     }
   }
 
+  async confirmEmail({ params: { confirmation_token }, auth, request, response }) {
+    try {
+      const user = await User.findBy('confirmation_token', confirmation_token)
+      const new_password = request.input('password')
+
+      user.password = new_password
+      user.confirmation_token = null                //set fake token to null
+      user.is_active = true
+      user.is_login = true
+
+      await user.save()                             //update the database with the new details above
+
+      const token = await auth.attempt(user.email, new_password)      //log the user in with the new password and generate a "real" token
+
+      response.send({
+        message: 'Your email has been confirmed',
+        token
+      })
+    } catch (error) {
+      console.log(error)
+      response.status(404).send({
+        message: "An error occured. Please try again later"
+      })
+    }
+
+    // TODO: Resend confirmation link
+  }
+
   async login({ request, auth, response }) {
     try {
       const email = request.input('email')

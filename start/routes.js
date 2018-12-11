@@ -17,6 +17,7 @@
 const Route = use('Route')
 
 Route.post('/register', 'UserController.register').validator('RegisterUser')
+Route.put('/register/confirm/:confirmation_token', 'Members/UserController.confirmEmail')
 Route.post('/login', 'UserController.login')
 Route.group(() => {
   Route.get('/profile', 'UserController.profile')
