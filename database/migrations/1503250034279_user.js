@@ -14,6 +14,9 @@ class UserSchema extends Schema {
       table.string('email', 254).notNullable().unique()
       table.string('phone').notNullable().unique()
       table.string('password', 60).notNullable()
+      table.string('confirmation_token')
+      table.boolean('is_login').defaultTo(0)
+      table.boolean('is_active').defaultTo(0)
       table.timestamps()
     })
   }

@@ -2,6 +2,8 @@
 
 const User = use('App/Models/User')
 const Hash = use('Hash')
+const Mail = use('Mail')
+const random_string = require('random-string')
 const Encryption = use('Encryption')
 
 class UserController {
@@ -11,16 +13,29 @@ class UserController {
     response.send(users)
   }
 
-  async register({ request, auth, response }) {
-    const userDetails = request.all()
+  async register({ request, response }) {
+    // const userDetails = request.all()
     try {
       // Authenticate user using JWT
-      const user = await User.create(userDetails)
-      const token = await auth.generate(user)
+      const user = await User.create({
+        first_name: request.input('first_name'),
+        last_name: request.input('last_name'),
+        email: request.input('email'),
+        username: request.input('email'),
+        phone: request.input('phone'),
+        password: '!re0laniy@n',
+        confirmation_token: random_string({ length: 40 })
+      })
+      // const token = await auth.generate(user)
+      await Mail.send('auth.emails.confirm_email', user.toJSON(), message => {
+        message
+          .to(user.email)
+          .from('noreply@ireolaniyan.com')
+          .subject('Confirm your email address')
+      })
 
       return response.send({
-        mmessage: "Successully created account",
-        data: token
+        message: "Please check your email address. We dropped a mail for you"
       })
     } catch (error) {
       console.log(error)
